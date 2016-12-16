@@ -1,0 +1,20 @@
+{
+  "name": "testdelay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "express": "^4.14.0",
+    "express-pouchdb": "1.0.6-thali",
+    "leveldown-mobile": "1.1.1",
+    "lie": "^3.1.0",
+    "pouchdb": "5.4.5",
+    "stats-lite": "^2.0.3"
+  }
+}
