@@ -5,6 +5,7 @@ var Buffer = require('buffer').Buffer;
 module.exports = {
   HOSTNAME: 'localhost',
   PORT: 3000,
+  PROTOCOL: 'http',
   PATH: '/',
   DB_PATH: '/db',
   CONNECTION_TYPES: {

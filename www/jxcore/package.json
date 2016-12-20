@@ -12,9 +12,14 @@
   "dependencies": {
     "express": "^4.14.0",
     "express-pouchdb": "1.0.6-thali",
+    "forever-agent": "^0.6.1",
+    "fs-extra-promise": "^0.4.1",
+    "inherits": "^2.0.3",
+    "js-extend": "^1.0.1",
     "leveldown-mobile": "1.1.1",
     "lie": "^3.1.0",
     "pouchdb": "5.4.5",
-    "stats-lite": "^2.0.3"
+    "stats-lite": "^2.0.3",
+    "tmp": "0.0.31"
   }
 }

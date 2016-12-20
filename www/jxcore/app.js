@@ -1,58 +1,61 @@
 'use strict';
 
-var Client = require('./client');
 var Server = require('./server');
-var PouchDB = require('pouchdb');
-var levelDown = require('leveldown-mobile');
 var Promise = require('lie');
-
-var config = require('./config');
 var utils = require('./utils');
+var config = require('./config');
+var ForeverAgent = require('forever-agent');
 
-var client = new Client(config.CONNECTION_TYPES.HTTP);
 var server = new Server();
-
-var CustomDb = PouchDB.defaults({
-  db: levelDown,
-  mode: 'minimumForPouchDB',
-  prefix: 'db/'
+var serverUrl = config.PROTOCOL + '://' +
+ config.HOSTNAME + ':' + config.PORT +
+ config.DB_PATH + '/' + utils.getUniqueRandomName();
+var db = new utils.getLevelDownPouchDb()(serverUrl, {
+  ajax: {
+    agent: new ForeverAgent({
+      maxSockets: 100
+    })
+  }
 });
 
-var db = new CustomDb('http://localhost:3000/db/some');
-
+var counter = 0;
 
 server.init()
 .then(function (port) {
   console.log('Express server is started. (port: ' + port + ')');
-  return makePut(db);
-})
-.then(function () {
-  return utils.callRow(makeGet, db, 50);
+  return utils.callRow(makePut, db, 30);
 })
 .then(function (times) {
-  utils.logTime(times);
-  return utils.callParallel(makeGet, db, 5);
+  counter = 0;
+  utils.logTime(times, 'PUT');
+  return Promise.all([utils.callParallel(makeGet, db, 4),
+                      utils.callParallel(makePost, db, 1)]);
 })
 .then(function (times) {
-  utils.logTime(times);
-  return utils.callParallel(makeGet, db, 10);
+  utils.logTime(times[0], 'GET');
+  utils.logTime(times[1], 'POST');
+  return Promise.all([utils.callParallel(makeGet, db, 7),
+                      utils.callParallel(makePost, db, 3)]);
 })
 .then(function (times) {
-  utils.logTime(times);
-  return utils.callParallel(makeGet, db, 15);
+  utils.logTime(times[0], 'GET');
+  utils.logTime(times[1], 'POST');
+  return Promise.all([utils.callParallel(makeGet, db, 9),
+                      utils.callParallel(makePost, db, 6)]);
 })
 .then(function (times) {
-  utils.logTime(times);
-  return process.exit();
+  utils.logTime(times[0], 'GET');
+  utils.logTime(times[1], 'POST');
+  return;
 })
 .catch(function(e) {
-  logger.fatal('EXIT with ' + JSON.stringify(e));
+  console.log('EXIT with ' + JSON.stringify(e));
 });
 
 function makeGet (db) {
   return new Promise(function (resolve, reject) {
     var start = Date.now();
-    db.get('new', function (err, result) {
+    db.get('new' + counter++, function (err, result) {
       if(!err) {
         resolve(Date.now() - start);
       } else {
@@ -67,7 +70,7 @@ function makePut(db) {
     var start = Date.now();
     db.put({
       title: 'Some string',
-      _id: 'new'
+      _id: 'new' + counter++
     }, function (err, result) {
       if(!err) {
         resolve(Date.now() - start);

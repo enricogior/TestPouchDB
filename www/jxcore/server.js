@@ -3,24 +3,18 @@
 var http = require('http');
 var express = require('express');
 var Promise = require('lie');
-var PouchDB = require('pouchdb');
-var levelDown = require('leveldown-mobile');
 var expressPouchDb = require('express-pouchdb');
+var utils = require('./utils');
 
 var config = require('./config');
 
 function Server() {
   this.app = express();
 
-  var CustomDb = PouchDB.defaults({
-    db: levelDown,
-    mode: 'minimumForPouchDB',
-    prefix: 'db/'
-  });
-
-  this.app.use(config.DB_PATH, expressPouchDb(CustomDb));
-
-  var db = new CustomDb('some');
+  this.app.use(config.DB_PATH, expressPouchDb(
+      utils.getLevelDownPouchDb(),
+      { mode: 'minimumForPouchDB' }
+    ));
 
   return this;
 }
