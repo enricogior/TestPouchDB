@@ -8,7 +8,7 @@ var tmp = require('tmp');
 var platform = require('./platform');
 var fs = require('fs-extra-promise');
 var PouchDB = require('pouchdb');
-var levelDown = require('leveldown-mobile');
+var levelDown = require('memdown');
 var PouchDBGenerator = require('./pouchDBGenerator');
 
 module.exports.callParallel = function (method, args, n) {
@@ -39,8 +39,8 @@ module.exports.callRow = function (method, args, n) {
 module.exports.logTime = function (requestsTime, method) {
   console.log(method + ': ' + requestsTime.join('ms, ') + 'ms');
   console.log(method + ': ' + 'Average time: ' + stats.mean(requestsTime) + 'ms');
-  console.log(method + ': ' + 'Median: ' + stats.median(requestsTime) + 'ms');
-  console.log(method + ': ' + 'Standard deviation: ' + stats.stdev(requestsTime) + 'ms');
+  //console.log(method + ': ' + 'Median: ' + stats.median(requestsTime) + 'ms');
+  //console.log(method + ': ' + 'Standard deviation: ' + stats.stdev(requestsTime) + 'ms');
 };
 
 function makeArray(length) {
