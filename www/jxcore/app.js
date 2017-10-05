@@ -10,13 +10,7 @@ var server = new Server();
 var serverUrl = config.PROTOCOL + '://' +
  config.HOSTNAME + ':' + config.PORT +
  config.DB_PATH + '/' + utils.getUniqueRandomName();
-var db = new utils.getLevelDownPouchDb()(serverUrl, {
-  ajax: {
-    agent: new ForeverAgent({
-      maxSockets: 100
-    })
-  }
-});
+var db = new utils.getLevelDownPouchDb()(serverUrl);
 
 var counter = 0;
 
